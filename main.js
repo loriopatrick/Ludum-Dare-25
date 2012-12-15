@@ -99,11 +99,8 @@ var game = {
     btn_down:function (name) {
         return this.vars.keys[name];
     },
-    add_prefab:function (name, image, width, height, styles, settings) {
-        if (!height) height = width;
-        if (!styles) styles = null;
+    add_prefab:function (name, width, height, styles, settings) {
         this.vars.prefabs[name] = {
-            image:image,
             width:width,
             height:height,
             styles:styles,
@@ -113,15 +110,17 @@ var game = {
     get_prefab:function (name) {
         var sprite = Sprite3D.create();
         var s = sprite.style, p = this.vars.prefabs[name];
-        s.background = 'url(' + p.image + ')';
+        sprite.height = p.height;
+        sprite.width = p.width;
         s.width = p.width + 'px';
         s.height = p.height + 'px';
-        s.backgroundSize = 'contain';
-        sprite.width = p.width;
-        sprite.height = p.height;
         if (p.styles) {
-            for (var style in p.styles) {
-                s[style] = p.styles[style];
+            if (typeof p.styles == 'string') {
+                sprite.className = p.styles;
+            } else {
+                for (var style in p.styles) {
+                    s[style] = p.styles[style];
+                }
             }
         }
         if (p.settings) {
@@ -139,7 +138,6 @@ var game = {
     }
 };
 
-
 var utl = {
     rand:function (min, max) {
         return Math.random() * (max - min) + min;
@@ -155,7 +153,7 @@ var utl = {
         if (!a_pos) a_pos = a.position();
         if (!b_pos) b_pos = b.position();
 
-        function cross (axis, length) {
+        function cross(axis, length) {
             var a_start = a_pos[axis];
             var b_start = a_pos[axis];
             var a_end = a_start + a[length];
@@ -182,162 +180,166 @@ var utl = {
     }
 };
 
-var distance = 0;
-var sprites = {};
-var roadItems = [];
+var steps = [], barrier = [], bombs = [], player;
 
 function create_prefabs() {
-    game.add_prefab('player', 'img/monster2.gif', 150, 114, {'zIndex':100});
-    game.add_prefab('player', 'img/plr.gif', 64, null, {'zIndex':50}, {
-        'touch':true,
-        'points':100,
-        'replace':'player_dead',
-        'r_road':true,
-        'die':true
-    });
-    game.add_prefab('mine', 'img/mine.gif', 64, null, null, {
-        'touch':true,
-        'points':-10,
-        'health':-10,
-        'replace':'player_dead',
-        'r_road':false,
-        'die':true
-    });
+    game.add_prefab('player', 64, 64, 'player');
+    game.add_prefab('roof_tile', 128, 64, 'roof_tile');
+    game.add_prefab('step', 128, 64, 'step');
 }
 
-var player;
-
-function set_world() {
+function ready_game() {
     player = game.get_prefab('player');
-    game.add(game.get_prefab('mine'));
-    game.add(player);
-}
+    player.velocity = {x:0, y:0};
+    player.touch = {left:false, top:false, right:false, bottom:false};
 
-function add_prefab_to_road(name, x, y, z, settings) {
-    var prefab = game.get_prefab(name);
-    prefab.position(x || 0, y || 0, z || 0);
-    prefab.update();
-    game.add(prefab);
-    roadItems.push(prefab);
-    if (!settings) return;
-    for (var prop in settings) {
-        prefab[prop] = settings[prop];
+    player.position(game.settings.aspect.x / 2 - 65,
+        game.settings.aspect.y / 2 - 32, 0).update();
+    game.add(player);
+
+    for (var i = 0; i < game.settings.aspect.x / 128; ++i) {
+        var step = game.get_prefab('step');
+        step.position(i * 128, game.settings.aspect.y - 64, 0).update();
+        game.add(step);
+        steps.push(step);
     }
 }
 
 var health = 100;
-var points = 0;
-
-var roadScrubs = [game.vars.stage, document.getElementById('streetLine')];
+var physics_scale = 100;
+function raiseStep(step, dist) {
+    if (dist == 0) return;
+    step.height += dist;
+    step.style.height = step.height + 'px';
+    step.move(0, -dist, 0).update();
+}
 
 function loop(time) {
+    var sec_time = time / 1000;
+    player.pos = player.position();
 
-    var pos = player.position();
-
-    function updateWorld() {
-        var runSpeed = 0.3;
-        var step = time * runSpeed;
-        distance += step;
-        game.vars.stage.style.backgroundPosition = '0 ' + (distance % 255) + 'px';
-        roadScrubs[1].style.backgroundPosition = '0 ' + (distance % 200) + 'px';
-
-        for (var i = 0; i < roadItems.length;) {
-            var item = roadItems[i];
-            var posI = item.position();
-            if (posI.y > game.settings.aspect.y) { // out of frame
-                game.remove(item);
-                roadItems.splice(i, 1);
-                continue;
-            }
-            if (item.touch) {
-                if(utl.touch(player, item, pos, posI)) {
-                    if (item.points) points += item.points;
-                    if (item.health) health += item.health;
-                    if (item.replace) {
-                        if (item.r_road) {
-                            add_prefab_to_road(item.replace, posI.x, posI.y, posI.z);
-                        } else {
-                            var prefab = game.get_prefab(item.replace);
-                            prefab.position(posI.x, posI.y, posI.z);
-                            prefab.update();
-                            game.add(prefab);
-                        }
-                    }
-                    if (item.replace || item.die) {
-                        game.remove(item);
-                        roadItems.splice(i, 1);
-                        continue;
-                    }
-                }
-            }
-            item.move(0, step, 0).update();
-            ++i;
-        }
-    }
-
-//    function movePeople(monsterPos) {
-//        if (!monsterPos) monsterPos = monster.position();
-//        var playerPos = sprites.player.position();
-//        var dist = Math.max(Math.sqrt(Math.pow(playerPos.x - monsterPos.x, 2) +
-//            Math.pow(playerPos.y - monsterPos.y, 2)), 1);
-//        var deg = Math.atan2(monsterPos.y + sprites.monster.height / 2 - playerPos.y,
-//            monsterPos.x + sprites.monster.width / 2 - playerPos.x) + Math.PI / 2;
-//        sprites.player.rotationZ(deg * 180 / Math.PI);
-//        sprites.player.move(-timeScale / (dist / 100 + 1) * Math.sin(deg), timeScale / (dist / 100 + 1) * Math.cos(deg), 0);
-//        sprites.player.update();
-//        console.log(deg);
-//    }
-
-
-    function genTraps() {
-        var ran = Math.random();
-        if (Math.min(distance / 1000, 0.1) > ran * 10) {
-            add_prefab_to_road('mine', utl.rand(0, game.settings.aspect.x), 10, {
-                'trap':true,
-                'replace':'explosion'
-            });
-        }
-    }
-
-    genTraps();
-
-    function movePlayer() {
-        var speed = 0.5 * time;
-        if (game.btn_down('up')) {
-            player.move(0, -speed, 0);
-        }
+    (function controls() {
         if (game.btn_down('left')) {
-            player.move(-speed * 2, 0, 0);
+            player.pos.x -= time;
         }
         if (game.btn_down('right')) {
-            player.move(speed * 2, 0, 0);
+            player.pos.x += time;
         }
-        if (game.btn_down('down')) {
-            player.move(0, speed, 0);
-        }
-        if (pos.x < 0) {
-            player.x(0);
-        }
-        if (pos.x + player.width > game.settings.aspect.x) {
-            player.x(game.settings.aspect.x - player.width);
-        }
-        if (pos.y < 0) {
-            player.y(0);
-        }
-        if (pos.y + player.height > game.settings.aspect.y) {
-            player.y(game.settings.aspect.y - player.height);
-        }
-        player.update();
-    }
+    })();
 
-    updateWorld();
-    movePlayer();
-//    movePeople();
+    (function collision() {
+        var upped = {};
+
+
+        function world_collide (object) {
+
+            // wall
+            if (object.pos.x < 0) object.pos.x = 0;
+            if (object.pos.x + object.width >= game.settings.aspect.x) {
+                object.pos.x = game.settings.aspect.x - object.width - 1;
+            }
+
+
+            // floor / step collide
+            var block = object.pos.x / 128,
+                block_end = (object.pos.x + object.width) / 128;
+
+            var temp1, temp2, diff = -10;
+
+            var object_bottom = object.pos.y + object.height;
+            var game_height = game.settings.aspect.y;
+
+            if ((temp1 = Math.floor(block)) !=
+                (temp2 = Math.floor(block_end))) { // block covers 2 steps
+                var leftStep = steps[temp1];
+                var rightStep = steps[temp2];
+                var high = Math.max(leftStep.height, rightStep.height);
+
+                diff = object_bottom - (game_height - high);
+                if (diff >= 0 && leftStep.height == rightStep.height) {
+                    raiseStep(leftStep, 10);
+                    raiseStep(rightStep, 10);
+                    object.pos.y = game.settings.aspect.y - high - object.height;
+                    upped[temp1] = true;
+                    upped[temp2] = true;
+                    object.velocity.y = 0;
+                } else if (diff >= 0 && diff <= 10) {
+                    if (leftStep.height > rightStep.height) {
+                        raiseStep(leftStep, 10);
+                        object.pos.y = game.settings.aspect.y - leftStep.height - object.height;
+                        upped[temp1] = true;
+                    } else {
+                        raiseStep(rightStep, 10);
+                        object.pos.y = game.settings.aspect.y - rightStep.height - object.height;
+                        upped[temp2] = true;
+                    }
+                    object.velocity.y = 0;
+                } else {
+                    var side = diff > 10;
+                    diff = object_bottom - (game_height
+                        - Math.min(leftStep.height, rightStep.height));
+                    if (leftStep.height > rightStep.height) {
+                        if (side) object.pos.x = temp2 * 128;
+                        if (diff >= 0) {
+                            raiseStep(rightStep, 10);
+                            object.pos.y = game.settings.aspect.y - rightStep.height - object.height;
+                            upped[temp2] = true;
+                        }
+                    } else {
+                        if (side) object.pos.x = temp1 * 128 + object.width;
+                        if (diff >= 0) {
+                            raiseStep(leftStep, 10);
+                            object.pos.y = game.settings.aspect.y - leftStep.height - object.height;
+                            upped[temp1] = true;
+                        }
+                    }
+                }
+
+            } else {
+                var step = steps[temp1];
+                upped[temp1] = true;
+                if (object_bottom >= game_height - step.height) {
+                    raiseStep(step, 10);
+                    object.pos.y = game.settings.aspect.y - step.height - object.height;
+                    object.velocity.y = 0;
+                }
+            }
+        }
+
+        world_collide(player);
+
+
+
+        // lower other steps
+        for (var i = 0; i < steps.length; ++i) {
+            if (upped[i]) continue;
+            var step = steps[i];
+            if (step.height <= 64) continue;
+            var h = steps[i].height - 74;
+            if (h < 0) {
+                raiseStep(step, h);
+                return;
+            }
+            raiseStep(step, -5);
+        }
+    })();
+
+    (function physics() {
+        player.velocity.y -= 9.8 * sec_time * physics_scale;
+        if (player.touch.bottom || player.touch.top) {
+            player.velocity.x /= 1.5;
+        }
+        player.pos.x += player.velocity.x * sec_time;
+        player.pos.y += -player.velocity.y * sec_time;
+    })();
+
+    player.position(player.pos.x, player.pos.y, player.pos.z);
+    player.update();
 }
 
 (function () {
     game.init('#game');
     create_prefabs();
-    set_world();
+    ready_game();
     game.start_loop(loop);
 })();
