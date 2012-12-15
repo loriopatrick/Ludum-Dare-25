@@ -143,6 +143,42 @@ var game = {
 var utl = {
     rand:function (min, max) {
         return Math.random() * (max - min) + min;
+    },
+    dist:function (a, b) {
+        var sum = 0;
+        for (var v in a) {
+            sum += Math.pow(a[v] - b[v], 2);
+        }
+        return Math.sqrt(sum);
+    },
+    touch:function (a, b, a_pos, b_pos) {
+        if (!a_pos) a_pos = a.position();
+        if (!b_pos) b_pos = b.position();
+
+        function cross (axis, length) {
+            var a_start = a_pos[axis];
+            var b_start = a_pos[axis];
+            var a_end = a_start + a[length];
+            var b_end = b_start + b[length];
+
+            var start_in = a_start < b_start && a_end > b_start;
+            var end_in = a_start < b_end && a_end > b_end;
+
+            if (start_in && end_in) return 3;
+            if (end_in) return 2;
+            if (start_in) return 1;
+
+            // What if it's b is enclosing a
+            if (b_start < a_start && b_end > a_start) return 4;
+
+            return 0;
+        }
+
+        var xCross = cross('x', 'width');
+        var yCross = cross('y', 'height');
+
+        // todo: give number to represent what is getting intersected
+        if (xCross && yCross) return true;
     }
 };
 
@@ -156,14 +192,16 @@ function create_prefabs() {
         'touch':true,
         'points':100,
         'replace':'player_dead',
-        'r_road':true
+        'r_road':true,
+        'die':true
     });
     game.add_prefab('mine', 'img/mine.gif', 64, null, null, {
         'touch':true,
         'points':-10,
         'health':-10,
         'replace':'player_dead',
-        'r_road':false
+        'r_road':false,
+        'die':true
     });
 }
 
@@ -187,20 +225,50 @@ function add_prefab_to_road(name, x, y, z, settings) {
     }
 }
 
+var health = 100;
+var points = 0;
+
+var roadScrubs = [game.vars.stage, document.getElementById('streetLine')];
+
 function loop(time) {
 
-    function moveWorld() {
+    var pos = monster.position();
+
+    function updateWorld() {
         var runSpeed = 0.3;
         var step = time * runSpeed;
         distance += step;
-        game.vars.stage.style.backgroundPosition = '0 ' + (distance % 254) + 'px';
+        game.vars.stage.style.backgroundPosition = '0 ' + (distance % 255) + 'px';
+        roadScrubs[1].style.backgroundPosition = '0 ' + (distance % 200) + 'px';
+
         for (var i = 0; i < roadItems.length;) {
             var item = roadItems[i];
-            var pos = item.position();
-            if (pos.y > game.settings.aspect.y) {
+            var posI = item.position();
+            if (posI.y > game.settings.aspect.y) { // out of frame
                 game.remove(item);
                 roadItems.splice(i, 1);
                 continue;
+            }
+            if (item.touch) {
+                if(utl.touch(monster, item, pos, posI)) {
+                    if (item.points) points += item.points;
+                    if (item.health) health += item.health;
+                    if (item.replace) {
+                        if (item.r_road) {
+                            add_prefab_to_road(item.replace, posI.x, posI.y, posI.z);
+                        } else {
+                            var prefab = game.get_prefab(item.replace);
+                            prefab.position(posI.x, posI.y, posI.z);
+                            prefab.update();
+                            game.add(prefab);
+                        }
+                    }
+                    if (item.replace || item.die) {
+                        game.remove(item);
+                        roadItems.splice(i, 1);
+                        continue;
+                    }
+                }
             }
             item.move(0, step, 0).update();
             ++i;
@@ -247,7 +315,6 @@ function loop(time) {
         if (game.btn_down('down')) {
             monster.move(0, speed, 0);
         }
-        var pos = monster.position();
         if (pos.x < 0) {
             monster.x(0);
         }
@@ -263,7 +330,7 @@ function loop(time) {
         monster.update();
     }
 
-    moveWorld();
+    updateWorld();
     movePlayer();
 //    movePeople();
 }
