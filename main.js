@@ -1,3 +1,5 @@
+"use strict";
+
 window.loop_call = (function () {
     return  window.requestAnimationFrame ||
         window.webkitRequestAnimationFrame ||
@@ -8,38 +10,6 @@ window.loop_call = (function () {
             window.setTimeout(callback, 1000 / 60);
         };
 })();
-//
-//var stage = null;
-//var sprites = {};
-//var keys = {};
-//var keyMap = {
-//    87:'up',
-//    38:'up',
-//    65:'left',
-//    37:'left',
-//    68:'right',
-//    39:'right',
-//    40:'down',
-//    83:'down'
-//};
-//var distance = 0;
-//var people = [];
-//var size = {x:null, y:null};
-//
-
-//
-//function load() {
-//    var person = Sprite3D.create();
-//    person.className = 'player';
-//    stage.appendChild(person);
-//    var monster = Sprite3D.create();
-//    monster.className = 'monster';
-//    stage.appendChild(monster);
-//    sprites['player'] = person;
-//    sprites['monster'] = monster;
-//}
-
-"use strict";
 
 var game = {
     vars:{
@@ -119,26 +89,36 @@ var game = {
     start_loop:function (loop) {
         this.vars.lastUpdate = new Date().getTime();
         var _this = this;
-        (function update () {
-            this.loop_call(update);
+        (function update() {
+            loop_call(update);
             var time = new Date().getTime(), last = _this.vars.lastUpdate;
             loop(time - last);
             _this.vars.lastUpdate = time;
         })();
     },
-    btn_down: function (name) {
+    btn_down:function (name) {
         return this.vars.keys[name];
     },
-    add_prefab: function (name, className) {
-        if (!className) className = name;
-        this.vars.prefabs[name] = className;
+    add_prefab:function (name, image, width, height) {
+        if (!height) height = width;
+        this.vars.prefabs[name] = {
+            image:image,
+            width:width,
+            height:height
+        };
     },
-    get_prefab: function (name) {
+    get_prefab:function (name) {
         var sprite = Sprite3D.create();
-        sprite.className = this.vars.prefabs[name];
+        var s = sprite.style, p = this.vars.prefabs[name];
+        s.background = 'url(' + p.image + ')';
+        s.width = p.width + 'px';
+        s.height = p.height + 'px';
+        s.backgroundSize = 'contain';
+        sprite.width = p.width;
+        sprite.height = p.height;
         return sprite;
     },
-    add: function (elem) {
+    add:function (elem) {
         this.vars.stage.appendChild(elem);
     }
 };
@@ -146,25 +126,21 @@ var game = {
 var distance = 0;
 var sprites = {};
 
-function create_prefabs () {
-    game.add_prefab('monster');
-    game.add_prefab('player');
+function create_prefabs() {
+    game.add_prefab('monster', 'img/monster2.gif', 150, 114);
+    game.add_prefab('player', 'img/plr.gif', 64);
 }
 
 var monster;
 
-function set_world () {
+function set_world() {
     monster = game.get_prefab('monster');
     game.add(monster);
 }
 
 function loop(time) {
-    var timeScale = time;
-
-    console.log('loop' + time);
-
     function moveWorld() {
-        distance += timeScale;
+        distance += time;
         game.vars.stage.style.backgroundPosition = '0 ' + (distance % 254) + 'px';
     }
 
@@ -182,7 +158,7 @@ function loop(time) {
 //    }
 
     function movePlayer() {
-        var speed = 0.5 * timeScale;
+        var speed = 0.5 * time;
         if (game.btn_down('up')) {
             monster.move(0, -speed, 0);
         }
@@ -195,7 +171,20 @@ function loop(time) {
         if (game.btn_down('down')) {
             monster.move(0, speed, 0);
         }
-//        console.log(monster.position() + ' :: ');
+        var pos = monster.position();
+        if (pos.x < 0) {
+            monster.x(0);
+        }
+        if (pos.x + monster.width > game.settings.aspect.x) {
+            monster.x(game.settings.aspect.x - monster.width);
+        }
+        if (pos.y < 0) {
+            monster.y(0);
+        }
+        if (pos.y + monster.height > game.settings.aspect.y) {
+            monster.y(game.settings.aspect.y - monster.height);
+        }
+        console.log(monster.position());
         monster.update();
     }
 
