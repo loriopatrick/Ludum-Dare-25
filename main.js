@@ -187,7 +187,7 @@ var sprites = {};
 var roadItems = [];
 
 function create_prefabs() {
-    game.add_prefab('monster', 'img/monster2.gif', 150, 114, {'zIndex':100});
+    game.add_prefab('player', 'img/monster2.gif', 150, 114, {'zIndex':100});
     game.add_prefab('player', 'img/plr.gif', 64, null, {'zIndex':50}, {
         'touch':true,
         'points':100,
@@ -205,12 +205,12 @@ function create_prefabs() {
     });
 }
 
-var monster;
+var player;
 
 function set_world() {
-    monster = game.get_prefab('monster');
+    player = game.get_prefab('player');
     game.add(game.get_prefab('mine'));
-    game.add(monster);
+    game.add(player);
 }
 
 function add_prefab_to_road(name, x, y, z, settings) {
@@ -232,7 +232,7 @@ var roadScrubs = [game.vars.stage, document.getElementById('streetLine')];
 
 function loop(time) {
 
-    var pos = monster.position();
+    var pos = player.position();
 
     function updateWorld() {
         var runSpeed = 0.3;
@@ -250,7 +250,7 @@ function loop(time) {
                 continue;
             }
             if (item.touch) {
-                if(utl.touch(monster, item, pos, posI)) {
+                if(utl.touch(player, item, pos, posI)) {
                     if (item.points) points += item.points;
                     if (item.health) health += item.health;
                     if (item.replace) {
@@ -304,30 +304,30 @@ function loop(time) {
     function movePlayer() {
         var speed = 0.5 * time;
         if (game.btn_down('up')) {
-            monster.move(0, -speed, 0);
+            player.move(0, -speed, 0);
         }
         if (game.btn_down('left')) {
-            monster.move(-speed * 2, 0, 0);
+            player.move(-speed * 2, 0, 0);
         }
         if (game.btn_down('right')) {
-            monster.move(speed * 2, 0, 0);
+            player.move(speed * 2, 0, 0);
         }
         if (game.btn_down('down')) {
-            monster.move(0, speed, 0);
+            player.move(0, speed, 0);
         }
         if (pos.x < 0) {
-            monster.x(0);
+            player.x(0);
         }
-        if (pos.x + monster.width > game.settings.aspect.x) {
-            monster.x(game.settings.aspect.x - monster.width);
+        if (pos.x + player.width > game.settings.aspect.x) {
+            player.x(game.settings.aspect.x - player.width);
         }
         if (pos.y < 0) {
-            monster.y(0);
+            player.y(0);
         }
-        if (pos.y + monster.height > game.settings.aspect.y) {
-            monster.y(game.settings.aspect.y - monster.height);
+        if (pos.y + player.height > game.settings.aspect.y) {
+            player.y(game.settings.aspect.y - player.height);
         }
-        monster.update();
+        player.update();
     }
 
     updateWorld();
