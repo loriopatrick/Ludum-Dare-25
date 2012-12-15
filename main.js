@@ -99,12 +99,15 @@ var game = {
     btn_down:function (name) {
         return this.vars.keys[name];
     },
-    add_prefab:function (name, image, width, height) {
+    add_prefab:function (name, image, width, height, styles, settings) {
         if (!height) height = width;
+        if (!styles) styles = null;
         this.vars.prefabs[name] = {
             image:image,
             width:width,
-            height:height
+            height:height,
+            styles:styles,
+            settings:settings
         };
     },
     get_prefab:function (name) {
@@ -116,32 +119,92 @@ var game = {
         s.backgroundSize = 'contain';
         sprite.width = p.width;
         sprite.height = p.height;
+        if (p.styles) {
+            for (var style in p.styles) {
+                s[style] = p.styles[style];
+            }
+        }
+        if (p.settings) {
+            for (var prop in p.settings) {
+                s[prop] = p.settings[prop];
+            }
+        }
         return sprite;
     },
     add:function (elem) {
         this.vars.stage.appendChild(elem);
+    },
+    remove:function (elem) {
+        elem.parentNode.removeChild(elem);
+    }
+};
+
+
+var utl = {
+    rand:function (min, max) {
+        return Math.random() * (max - min) + min;
     }
 };
 
 var distance = 0;
 var sprites = {};
+var roadItems = [];
 
 function create_prefabs() {
-    game.add_prefab('monster', 'img/monster2.gif', 150, 114);
-    game.add_prefab('player', 'img/plr.gif', 64);
+    game.add_prefab('monster', 'img/monster2.gif', 150, 114, {'zIndex':100});
+    game.add_prefab('player', 'img/plr.gif', 64, null, {'zIndex':50}, {
+        'touch':true,
+        'points':100,
+        'replace':'player_dead',
+        'r_road':true
+    });
+    game.add_prefab('mine', 'img/mine.gif', 64, null, null, {
+        'touch':true,
+        'points':-10,
+        'health':-10,
+        'replace':'player_dead',
+        'r_road':false
+    });
 }
 
 var monster;
 
 function set_world() {
     monster = game.get_prefab('monster');
+    game.add(game.get_prefab('mine'));
     game.add(monster);
 }
 
+function add_prefab_to_road(name, x, y, z, settings) {
+    var prefab = game.get_prefab(name);
+    prefab.position(x || 0, y || 0, z || 0);
+    prefab.update();
+    game.add(prefab);
+    roadItems.push(prefab);
+    if (!settings) return;
+    for (var prop in settings) {
+        prefab[prop] = settings[prop];
+    }
+}
+
 function loop(time) {
+
     function moveWorld() {
-        distance += time;
+        var runSpeed = 0.3;
+        var step = time * runSpeed;
+        distance += step;
         game.vars.stage.style.backgroundPosition = '0 ' + (distance % 254) + 'px';
+        for (var i = 0; i < roadItems.length;) {
+            var item = roadItems[i];
+            var pos = item.position();
+            if (pos.y > game.settings.aspect.y) {
+                game.remove(item);
+                roadItems.splice(i, 1);
+                continue;
+            }
+            item.move(0, step, 0).update();
+            ++i;
+        }
     }
 
 //    function movePeople(monsterPos) {
@@ -156,6 +219,19 @@ function loop(time) {
 //        sprites.player.update();
 //        console.log(deg);
 //    }
+
+
+    function genTraps() {
+        var ran = Math.random();
+        if (Math.min(distance / 1000, 0.1) > ran * 10) {
+            add_prefab_to_road('mine', utl.rand(0, game.settings.aspect.x), 10, {
+                'trap':true,
+                'replace':'explosion'
+            });
+        }
+    }
+
+    genTraps();
 
     function movePlayer() {
         var speed = 0.5 * time;
@@ -184,7 +260,6 @@ function loop(time) {
         if (pos.y + monster.height > game.settings.aspect.y) {
             monster.y(game.settings.aspect.y - monster.height);
         }
-        console.log(monster.position());
         monster.update();
     }
 
