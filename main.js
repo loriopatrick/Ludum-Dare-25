@@ -20,7 +20,9 @@ var game = {
         lastUpdate:null,
         prefabs:{},
         mouse_pos:{x:null, y:null},
-        mouse_down:false
+        mouse_down:false,
+        on:true,
+        close:null
     },
     settings:{
         aspect:{x:800, y:600},
@@ -33,7 +35,8 @@ var game = {
             68:'right',
             39:'right',
             40:'down',
-            83:'down'
+            83:'down',
+            16:'special'
         }
     },
     events:{
@@ -114,10 +117,14 @@ var game = {
         this.vars.lastUpdate = new Date().getTime();
         var _this = this;
         (function update() {
-            loop_call(update);
-            var time = new Date().getTime(), last = _this.vars.lastUpdate;
-            loop(time - last);
-            _this.vars.lastUpdate = time;
+            if (game.vars.on) {
+                loop_call(update);
+                var time = new Date().getTime(), last = _this.vars.lastUpdate;
+                loop(time - last);
+                _this.vars.lastUpdate = time;
+            } else {
+                if (game.vars.close) game.vars.close();
+            }
         })();
     },
     btn_down:function (name) {
@@ -208,22 +215,6 @@ var utl = {
     }
 };
 
-var LEVEL = {
-    name:'Build Level',
-    world:null,
-    scale:50,
-    victims:[
-        {
-            type:'blue',
-            start:{x:0, y:0},
-            left:false
-        }
-    ],
-    size:{},
-    speed:500,
-    free:true
-};
-
 function print_level() {
     var str = ['['];
     for (var i = 0; i < LEVEL.world.length; ++i) {
@@ -259,6 +250,8 @@ function set_block(pos, type) {
     LEVEL.world[pos.x][pos.y] = block;
 }
 
+var time_buffer = 0, blocks = 0, LEVEL;
+
 function ready_game() {
     LEVEL.size = {
         x:game.settings.aspect.x / LEVEL.scale,
@@ -279,8 +272,6 @@ function ready_game() {
         }
     }
 
-//    alert('Welcome to Level: ' + LEVEL.name);
-
     for (var j = 0; j < LEVEL.victims.length; ++j) {
         var vi = LEVEL.victims[j];
         var victim = game.get_prefab(vi.type);
@@ -291,7 +282,9 @@ function ready_game() {
     }
 }
 
-var time_buffer = 0;
+function loadLevel() {
+
+}
 
 function loop(time) {
     time_buffer += time;
@@ -403,26 +396,57 @@ function loop(time) {
             x:Math.floor(game.vars.mouse_pos.x / LEVEL.scale),
             y:Math.floor(game.vars.mouse_pos.y / LEVEL.scale)
         };
-        var type = 'block';
-        if (game.btn_down('up')) {
-            if (LEVEL.world[mouse_pos.x][mouse_pos.y]) {
-                game.remove(LEVEL.world[mouse_pos.x][mouse_pos.y]);
-                LEVEL.world[mouse_pos.x][mouse_pos.y] = null;
+        if (LEVEL.free) { // level creator
+            var type = 'block';
+            if (game.btn_down('up')) {
+                if (LEVEL.world[mouse_pos.x][mouse_pos.y]) {
+                    game.remove(LEVEL.world[mouse_pos.x][mouse_pos.y]);
+                    LEVEL.world[mouse_pos.x][mouse_pos.y] = null;
+                }
+                type = null;
+            } else if (game.btn_down('left')) {
+                type = 'red';
+            } else if (game.btn_down('right')) {
+                type = 'blue';
+            } else if (game.btn_down('down')) {
+                type = 'solid';
             }
-            type = null;
-        } else if (game.btn_down('left')) {
-            type = 'red';
-        } else if (game.btn_down('right')) {
-            type = 'blue';
-        } else if (game.btn_down('down')) {
-            type = 'solid';
-        }
-        if (type && !LEVEL.world[mouse_pos.x][mouse_pos.y]) {
-            var block = game.get_prefab(type);
-            block.type = type;
-            block.position(mouse_pos.x * LEVEL.scale, mouse_pos.y * LEVEL.scale, 0).update();
-            game.add(block);
-            LEVEL.world[mouse_pos.x][mouse_pos.y] = block;
+            if (type && !LEVEL.world[mouse_pos.x][mouse_pos.y]) {
+                var block = game.get_prefab(type);
+                block.type = type;
+                block.position(mouse_pos.x * LEVEL.scale, mouse_pos.y * LEVEL.scale, 0).update();
+                game.add(block);
+                LEVEL.world[mouse_pos.x][mouse_pos.y] = block;
+            }
+        } else { // level player
+            var b;
+            if (game.btn_down('special')) {
+                b = LEVEL.world[mouse_pos.x][mouse_pos.y];
+                if (b && b.type == 'block') {
+                    if (mouse_pos.y == 0 || !LEVEL.world[mouse_pos.x][mouse_pos.y - 1] ||
+                        LEVEL.world[mouse_pos.x][mouse_pos.y - 1].type != 'block') {
+                        game.remove(LEVEL.world[mouse_pos.x][mouse_pos.y]);
+                        LEVEL.world[mouse_pos.x][mouse_pos.y] = null;
+                        ++blocks;
+                    } else {
+                        // todo: player error audio
+                    }
+                }
+            } else {
+                if (!LEVEL.world[mouse_pos.x][mouse_pos.y] &&
+                    (mouse_pos.y + 1 >= LEVEL.size.y || LEVEL.world[mouse_pos.x][mouse_pos.y + 1])) {
+                    if (blocks > 0) {
+                        b = game.get_prefab('block');
+                        b.type = 'block';
+                        b.position(mouse_pos.x * LEVEL.scale, mouse_pos.y * LEVEL.scale, 0).update();
+                        game.add(b);
+                        LEVEL.world[mouse_pos.x][mouse_pos.y] = b;
+                        --blocks;
+                    }
+                } else {
+                    // todo: play error audio
+                }
+            }
         }
     }
 }
