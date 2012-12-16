@@ -231,7 +231,8 @@ function loop(time) {
         var upped = {};
 
 
-        function world_collide (object) {
+        function world_collide(object) {
+            object.grounded = false;
 
             // wall
             if (object.pos.x < 0) object.pos.x = 0;
@@ -257,14 +258,19 @@ function loop(time) {
 
                 diff = object_bottom - (game_height - high);
                 if (diff >= 0 && leftStep.height == rightStep.height) {
-                    raiseStep(leftStep, 10);
-                    raiseStep(rightStep, 10);
+                    var shift = (block - temp1 - .5) * 2;
+                    if (shift > .5) {
+                        raiseStep(leftStep, 10);
+                        upped[temp1] = true;
+                    } else {
+                        raiseStep(rightStep, 10);
+                        upped[temp2] = true;
+                    }
                     object.pos.y = game.settings.aspect.y - high - object.height;
-                    upped[temp1] = true;
-                    upped[temp2] = true;
-                    object.velocity.y = 0;
+                    object.grounded = true;
+                    object.velocity.y = 10;
                 } else if (diff >= 0 && diff <= 10) {
-                    if (leftStep.height > rightStep.height) {
+                    if (leftStep.height >= rightStep.height) {
                         raiseStep(leftStep, 10);
                         object.pos.y = game.settings.aspect.y - leftStep.height - object.height;
                         upped[temp1] = true;
@@ -273,9 +279,10 @@ function loop(time) {
                         object.pos.y = game.settings.aspect.y - rightStep.height - object.height;
                         upped[temp2] = true;
                     }
-                    object.velocity.y = 0;
+                    object.velocity.y = 10;
+                    object.grounded = true;
                 } else {
-                    var side = diff > 10;
+                    var side = diff > 10 && Math.abs(leftStep.height - rightStep.height) > 10;
                     diff = object_bottom - (game_height
                         - Math.min(leftStep.height, rightStep.height));
                     if (leftStep.height > rightStep.height) {
@@ -284,6 +291,7 @@ function loop(time) {
                             raiseStep(rightStep, 10);
                             object.pos.y = game.settings.aspect.y - rightStep.height - object.height;
                             upped[temp2] = true;
+                            object.grounded = true;
                         }
                     } else {
                         if (side) object.pos.x = temp1 * 128 + object.width;
@@ -291,24 +299,23 @@ function loop(time) {
                             raiseStep(leftStep, 10);
                             object.pos.y = game.settings.aspect.y - leftStep.height - object.height;
                             upped[temp1] = true;
+                            object.grounded = true;
                         }
                     }
                 }
-
             } else {
                 var step = steps[temp1];
-                upped[temp1] = true;
                 if (object_bottom >= game_height - step.height) {
                     raiseStep(step, 10);
                     object.pos.y = game.settings.aspect.y - step.height - object.height;
-                    object.velocity.y = 0;
+                    object.velocity.y = 10;
+                    object.grounded = true;
+                    upped[temp1] = true;
                 }
             }
         }
 
         world_collide(player);
-
-
 
         // lower other steps
         for (var i = 0; i < steps.length; ++i) {
@@ -323,6 +330,10 @@ function loop(time) {
             raiseStep(step, -5);
         }
     })();
+
+    if (game.btn_down('up') && player.grounded) {
+        player.velocity.y += 500;
+    }
 
     (function physics() {
         player.velocity.y -= 9.8 * sec_time * physics_scale;
