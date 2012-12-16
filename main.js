@@ -1,5 +1,7 @@
 "use strict";
 
+var BUILDING = false; // true;
+
 window.loop_call = (function () {
     return  window.requestAnimationFrame ||
         window.webkitRequestAnimationFrame ||
@@ -324,6 +326,7 @@ function loadLevel(num, callback) {
     time_buffer = 0;
     game.clear();
     LEVEL = utl.clone(levels.order[num]);
+    if (BUILDING) LEVEL.free = true;
     console.log(LEVEL);
     ready_game();
 
@@ -349,10 +352,12 @@ function loadLevel(num, callback) {
 }
 
 function fail() {
+    if (BUILDING) return;
     loadLevel(currentLevel);
 }
 
 function succeed() {
+    if (BUILDING) return;
     audio_clips['explosion'].play();
     loadLevel(currentLevel + 1);
 }
@@ -464,7 +469,7 @@ function loop(time) {
             var res = victim.elem.position();
             var key = res.x + '-' + res.y;
             if (pos_check[key]) {
-                alert('fail');
+                fail();
                 return;
             }
             pos_check[res.x + '-' + res.y] = true;
@@ -570,5 +575,9 @@ function loop(time) {
 (function () {
     game.init('#game');
     create_prefabs();
-    loadLevel(0);
+    if (BUILDING) {
+        loadLevel(levels.order.length - 1);
+        return;
+    }
+    loadLevel(levels.order.length - 1);
 })();

@@ -1,67 +1,5 @@
 var levels = {};
 
-//levels.fail = {
-//    name:'U LED IT TO SAFETY, U FAIL',
-//    world:[
-//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
-//        ['solid', 0, 0, 0, 0, 0, 'solid', 0, 0, 0, 'solid', 0, ],
-//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 'solid', 0, 0, 0, ],
-//        ['solid', 0, 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
-//        ['solid', 0, 0, 0, 0, 0, 'solid', 'solid', 'solid', 'solid', 0, 0, ],
-//        ['solid', 0, 'solid', 'solid', 'solid', 'solid', 'solid', 0, 0, 0, 0, 'solid', ],
-//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 'solid', 0, 'solid', 'solid', ],
-//        ['solid', 0, 'solid', 'solid', 'solid', 'solid', 'solid', 0, 0, 0, 0, 'solid', ],
-//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 0, ],
-//        ['solid', 0, 0, 0, 'solid', 0, 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
-//        ['solid', 0, 'solid', 0, 0, 0, 'solid', 0, 0, 0, 0, 0, ],
-//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 'solid', 0, 'solid', 'solid', ],
-//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
-//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 0, 0, 0, 0, ],
-//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 'solid', 0, 'solid', 0, ],
-//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
-//    ],
-//    victims:[
-//        {
-//            type:'blue',
-//            start:{x:0, y:0},
-//            left:true
-//        }
-//    ],
-//    size:{},
-//    speed:500
-//};
-//
-//levels.win = {
-//    name:'U LED IT TO DEATH, U SUCCEED',
-//    world:[
-//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 0, 0, 0, 0, ],
-//        ['solid', 0, 0, 0, 0, 0, 'solid', 0, 'solid', 'solid', 'solid', 0, ],
-//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 0, 0, 0, 0, ],
-//        ['solid', 0, 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
-//        ['solid', 0, 0, 0, 0, 0, 'solid', 0, 0, 0, 0, 0, ],
-//        ['solid', 0, 'solid', 'solid', 'solid', 'solid', 'solid', 0, 'solid', 0, 'solid', 0, ],
-//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
-//        ['solid', 0, 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 0, 0, ],
-//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 0, 0, 'solid', 'solid', ],
-//        ['solid', 0, 0, 0, 'solid', 0, 'solid', 0, 'solid', 0, 'solid', 'solid', ],
-//        ['solid', 0, 'solid', 0, 0, 0, 'solid', 0, 0, 0, 'solid', 'solid', ],
-//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 0, 0, ],
-//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
-//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 0, 0, 0, 0, ],
-//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 'solid', 'solid', 'solid', 0, ],
-//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 0, 0, 0, 0, ],
-//    ],
-//    victims:[
-//        {
-//            type:'blue',
-//            start:{x:0, y:0},
-//            left:true
-//        }
-//    ],
-//    size:{},
-//    speed:500
-//};
-
 levels.splash = {
     name:'By: Patrick Lorio',
     world:[
@@ -422,6 +360,78 @@ levels.lv8 = {
     speed:500
 };
 
+levels.lv9 = {
+    name:'Wait, What?',
+    world:[
+        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
+        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
+        ['solid', 'solid', 0, 0, 0, 0, 0, 0, 0, 0, 0, 'red', ],
+        ['solid', 'solid', 0, 'solid', 'solid', 0, 0, 0, 0, 0, 0, 'red', ],
+        ['solid', 'solid', 0, 'solid', 'solid', 0, 0, 0, 0, 0, 0, 'red', ],
+        ['solid', 'solid', 0, 'solid', 'solid', 0, 0, 0, 0, 0, 0, 'block', ],
+        ['solid', 'solid', 0, 'solid', 'solid', 0, 0, 0, 0, 0, 0, 'block', ],
+        ['solid', 'solid', 0, 'solid', 'solid', 0, 0, 0, 0, 0, 0, 'block', ],
+        ['solid', 'solid', 0, 'solid', 'solid', 0, 0, 0, 0, 0, 0, 'block', ],
+        ['solid', 'solid', 0, 'solid', 'solid', 0, 0, 0, 0, 0, 0, 'block', ],
+        ['solid', 'solid', 0, 'solid', 'solid', 0, 0, 0, 0, 0, 0, 'block', ],
+        ['solid', 'solid', 0, 'solid', 'solid', 0, 0, 0, 0, 0, 0, 'blue', ],
+        ['solid', 'solid', 0, 'solid', 'solid', 0, 0, 0, 0, 0, 0, 'blue', ],
+        ['solid', 'solid', 0, 0, 0, 0, 0, 0, 0, 0, 0, 'blue', ],
+        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
+        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
+    ],
+    victims:[
+        {
+            type:'blue',
+            start:{x:8, y:2},
+            left:false
+        },
+        {
+            type:'red',
+            start:{x:7, y:2},
+            left:true
+        }
+    ],
+    size:{},
+    speed:500
+};
+
+levels.lv10 = {
+    name:'Over the hill.',
+    world:[
+        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
+        ['solid', 0, 0, 0, 0, 0, 0, 0, 0, 'red', 'red', 'solid', ],
+        ['solid', 0, 0, 0, 0, 0, 0, 0, 0, 'red', 'red', 'solid', ],
+        ['solid', 0, 0, 0, 0, 0, 0, 0, 0, 'block', 'block', 'solid', ],
+        ['solid', 0, 0, 0, 0, 0, 0, 0, 0, 'block', 'block', 'solid', ],
+        ['solid', 'block', 'block', 'solid', 'solid', 0, 0, 'solid', 'solid', 'solid', 'solid', 'solid', ],
+        ['solid', 'block', 'block', 'solid', 'solid', 0, 0, 'solid', 'solid', 'solid', 'solid', 'solid', ],
+        ['solid', 'block', 'block', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
+        ['solid', 'block', 'block', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
+        ['solid', 'block', 'block', 'solid', 'solid', 0, 0, 'solid', 'solid', 'solid', 'solid', 'solid', ],
+        ['solid', 'block', 'block', 'solid', 'solid', 0, 0, 'solid', 'solid', 'solid', 'solid', 'solid', ],
+        ['solid', 0, 0, 0, 0, 0, 0, 0, 'block', 'block', 'block', 'solid', ],
+        ['solid', 0, 0, 0, 0, 0, 0, 0, 0, 'block', 'block', 'solid', ],
+        ['solid', 0, 0, 0, 0, 0, 0, 0, 0, 'blue', 'blue', 'solid', ],
+        ['solid', 0, 0, 0, 0, 0, 0, 0, 0, 'blue', 'blue', 'solid', ],
+        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
+    ],
+    victims:[
+        {
+            type:'blue',
+            start:{x:9, y:6},
+            left:false
+        },
+        {
+            type:'red',
+            start:{x:6, y:6},
+            left:true
+        }
+    ],
+    size:{},
+    speed:500
+};
+
 levels.order = [
     levels.splash,
     levels.tut1,
@@ -433,5 +443,7 @@ levels.order = [
     levels.lv5,
     levels.lv6,
     levels.lv7,
-    levels.lv8
+    levels.lv8,
+    levels.lv9,
+    levels.lv10
 ];
