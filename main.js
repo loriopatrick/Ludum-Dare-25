@@ -221,7 +221,6 @@ var utl = {
         var xCross = cross('x', 'width');
         var yCross = cross('y', 'height');
 
-        // todo: give number to represent what is getting intersected
         if (xCross && yCross) return true;
     },
     clone:function (obj) {
@@ -261,6 +260,13 @@ function create_prefabs() {
     game.add_prefab('solid', scale);
     game.add_prefab('blue', scale);
     game.add_prefab('red', scale);
+
+    load_audio('explosion', 'explosion.wav').volume = .05;
+    load_audio('bounce', 'move.wav').volume = .02;
+    load_audio('move', 'bounce.wav').volume = .1;
+    load_audio('add', 'bounce.wav').volume = .5;
+    load_audio('error', 'error.wav').volume = .05;
+    load_audio('pickup', 'pickup.wav').volume = .01;
 }
 
 function set_block(pos, type) {
@@ -330,33 +336,27 @@ function loadLevel(num, callback) {
     setTimeout(function () {
         msg.style.top = (-msg.offsetHeight / 2) + 'px';
     }, 0);
-    function removeMsg () {
+    function removeMsg() {
         center.removeChild(msg);
         window.onmousedown = null;
         game.start_loop(loop);
         console.log('started');
         if (callback) callback();
     }
+
     window.onmousedown = removeMsg;
     setTimeout(removeMsg, LEVEL.name.length * 100);
 }
 
 function fail() {
-    var l = currentLevel;
-    loadLevel(l);
-
-//    loadLevel(1, function () {
-//    });
+    loadLevel(currentLevel);
 }
 
 function succeed() {
-    var l = currentLevel;
-    loadLevel(l + 1);
-//, function () {
-//        loadLevel(l + 1);
-//    });
+    audio_clips['explosion'].play();
+    loadLevel(currentLevel + 1);
 }
-
+var last_down = false;
 function loop(time) {
     time_buffer += time;
 
@@ -434,12 +434,14 @@ function loop(time) {
     if (time_buffer > LEVEL.speed) {
         time_buffer = 0;
         var pos_check = {};
+        var collide = false;
         for (var i = 0; i < LEVEL.victims.length; ++i) {
             var victim = LEVEL.victims[i];
             if (!victim.elem) continue;
             var remove = false;
             var safe = false;
             update_position(victim, function (type) {
+                collide = true;
                 if (type == 'solid' || type == 'block') {
                     return;
                 }
@@ -468,6 +470,12 @@ function loop(time) {
             pos_check[res.x + '-' + res.y] = true;
         }
 
+        audio_clips['move'].play();
+
+        if (collide) {
+            audio_clips['bounce'].play();
+        }
+
         var win = true;
 
         for (var i = 0; i < LEVEL.victims.length; ++i) {
@@ -480,6 +488,12 @@ function loop(time) {
         if (win) {
             succeed();
             return;
+        }
+    }
+
+    function error() {
+        if (!last_down) {
+            audio_clips['error'].play();
         }
     }
 
@@ -521,9 +535,12 @@ function loop(time) {
                         game.remove(LEVEL.world[mouse_pos.x][mouse_pos.y]);
                         LEVEL.world[mouse_pos.x][mouse_pos.y] = null;
                         ++blocks;
+                        audio_clips['pickup'].play();
                     } else {
-                        // todo: player error audio
+                        error();
                     }
+                } else {
+                    error();
                 }
             } else {
                 if (!LEVEL.world[mouse_pos.x][mouse_pos.y] &&
@@ -535,12 +552,18 @@ function loop(time) {
                         game.add(b);
                         LEVEL.world[mouse_pos.x][mouse_pos.y] = b;
                         --blocks;
+                        audio_clips['add'].play();
+                    } else {
+                        error();
                     }
                 } else {
-                    // todo: play error audio
+                    error();
                 }
             }
         }
+        last_down = true;
+    } else {
+        last_down = false;
     }
 }
 
