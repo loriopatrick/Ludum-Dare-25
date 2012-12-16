@@ -1,5 +1,67 @@
 var levels = {};
 
+//levels.fail = {
+//    name:'U LED IT TO SAFETY, U FAIL',
+//    world:[
+//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
+//        ['solid', 0, 0, 0, 0, 0, 'solid', 0, 0, 0, 'solid', 0, ],
+//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 'solid', 0, 0, 0, ],
+//        ['solid', 0, 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
+//        ['solid', 0, 0, 0, 0, 0, 'solid', 'solid', 'solid', 'solid', 0, 0, ],
+//        ['solid', 0, 'solid', 'solid', 'solid', 'solid', 'solid', 0, 0, 0, 0, 'solid', ],
+//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 'solid', 0, 'solid', 'solid', ],
+//        ['solid', 0, 'solid', 'solid', 'solid', 'solid', 'solid', 0, 0, 0, 0, 'solid', ],
+//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 0, ],
+//        ['solid', 0, 0, 0, 'solid', 0, 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
+//        ['solid', 0, 'solid', 0, 0, 0, 'solid', 0, 0, 0, 0, 0, ],
+//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 'solid', 0, 'solid', 'solid', ],
+//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
+//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 0, 0, 0, 0, ],
+//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 'solid', 0, 'solid', 0, ],
+//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
+//    ],
+//    victims:[
+//        {
+//            type:'blue',
+//            start:{x:0, y:0},
+//            left:true
+//        }
+//    ],
+//    size:{},
+//    speed:500
+//};
+//
+//levels.win = {
+//    name:'U LED IT TO DEATH, U SUCCEED',
+//    world:[
+//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 0, 0, 0, 0, ],
+//        ['solid', 0, 0, 0, 0, 0, 'solid', 0, 'solid', 'solid', 'solid', 0, ],
+//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 0, 0, 0, 0, ],
+//        ['solid', 0, 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
+//        ['solid', 0, 0, 0, 0, 0, 'solid', 0, 0, 0, 0, 0, ],
+//        ['solid', 0, 'solid', 'solid', 'solid', 'solid', 'solid', 0, 'solid', 0, 'solid', 0, ],
+//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
+//        ['solid', 0, 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 0, 0, ],
+//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 0, 0, 'solid', 'solid', ],
+//        ['solid', 0, 0, 0, 'solid', 0, 'solid', 0, 'solid', 0, 'solid', 'solid', ],
+//        ['solid', 0, 'solid', 0, 0, 0, 'solid', 0, 0, 0, 'solid', 'solid', ],
+//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 0, 0, ],
+//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
+//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 0, 0, 0, 0, ],
+//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 'solid', 'solid', 'solid', 0, ],
+//        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 0, 0, 0, 0, ],
+//    ],
+//    victims:[
+//        {
+//            type:'blue',
+//            start:{x:0, y:0},
+//            left:true
+//        }
+//    ],
+//    size:{},
+//    speed:500
+//};
+
 levels.splash = {
     name:'By: Patrick Lorio',
     world:[
@@ -20,7 +82,6 @@ levels.splash = {
         ['solid', 'blue', 'blue', 'blue', 'blue', 'red', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
         ['solid', 'solid', 'solid', 'solid', 'red', 'red', 'solid', 0, 0, 0, 'solid', 0, ],
     ],
-    scale:50,
     victims:[
         {
             type:'blue',
@@ -29,12 +90,11 @@ levels.splash = {
         }
     ],
     size:{},
-    speed:500,
-    free:true
+    speed:500
 };
 
 levels.tut1 = {
-    name:'Basics',
+    name:'To kill a moving block, bring it to a static block of opposing color.',
     world:[
         ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
         ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
@@ -53,7 +113,6 @@ levels.tut1 = {
         ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
         ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
     ],
-    scale:50,
     victims:[
         {
             type:'blue',
@@ -62,12 +121,12 @@ levels.tut1 = {
         }
     ],
     size:{},
-    speed:500,
-//    free:true
+    speed:500
 };
 
 levels.tut2 = {
-    name:'Shift and mouse click on grey blocks to pick them up. You can only remove from the top of the stack.',
+    name:'Hold shift and mouse click on grey blocks to pick them up. ' +
+        'You can only remove the block if their is not a block above.',
     world:[
         ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
         ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
@@ -86,7 +145,6 @@ levels.tut2 = {
         ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
         ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
     ],
-    scale:50,
     victims:[
         {
             type:'blue',
@@ -95,8 +153,7 @@ levels.tut2 = {
         }
     ],
     size:{},
-    speed:500,
-//    free:true
+    speed:500
 };
 
 
@@ -120,7 +177,6 @@ levels.tut3 = {
         ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
         ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
     ],
-    scale:50,
     victims:[
         {
             type:'blue',
@@ -129,12 +185,11 @@ levels.tut3 = {
         }
     ],
     size:{},
-    speed:500,
-//    free:true
+    speed:500
 };
 
-levels.lv2 = {
-    name:'They can only go through the horizontal sides.',
+levels.tut4 = {
+    name:'For blocks to die or be released, you must hit the colored blocks horizontally.',
     world:[
         ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
         ['solid', 'solid', 'solid', 'blue', 'solid', 'solid', 'red', 'solid', 'solid', 'solid', 'solid', 'solid', ],
@@ -153,7 +208,6 @@ levels.lv2 = {
         ['solid', 'solid', 'solid', 'red', 'solid', 'solid', 'blue', 'solid', 'solid', 'solid', 'solid', 'solid', ],
         ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
     ],
-    scale:50,
     victims:[
         {
             type:'blue',
@@ -162,8 +216,7 @@ levels.lv2 = {
         }
     ],
     size:{},
-    speed:500,
-//    free:true
+    speed:500
 };
 
 levels.lv3 = {
@@ -186,7 +239,6 @@ levels.lv3 = {
         ['solid', 'red', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'block', 'solid', ],
         ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
     ],
-    scale:50,
     victims:[
         {
             type:'blue',
@@ -195,8 +247,7 @@ levels.lv3 = {
         }
     ],
     size:{},
-    speed:500,
-//    free:true
+    speed:500
 };
 
 levels.lv4 = {
@@ -219,7 +270,6 @@ levels.lv4 = {
         ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
         ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
     ],
-    scale:50,
     victims:[
         {
             type:'blue',
@@ -228,8 +278,7 @@ levels.lv4 = {
         }
     ],
     size:{},
-    speed:500,
-//    free:true
+    speed:500
 };
 
 levels.lv5 = {
@@ -252,7 +301,6 @@ levels.lv5 = {
         ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
         ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
     ],
-    scale:50,
     victims:[
         {
             type:'blue',
@@ -261,8 +309,7 @@ levels.lv5 = {
         }
     ],
     size:{},
-    speed:500,
-//    free:true
+    speed:500
 };
 
 levels.lv6 = {
@@ -285,7 +332,6 @@ levels.lv6 = {
         ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
         ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
     ],
-    scale:50,
     victims:[
         {
             type:'blue',
@@ -299,8 +345,7 @@ levels.lv6 = {
         }
     ],
     size:{},
-    speed:500,
-//    free:true
+    speed:500
 };
 
 
@@ -324,7 +369,6 @@ levels.lv7 = {
         ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
         ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
     ],
-    scale:50,
     victims:[
         {
             type:'blue',
@@ -338,8 +382,7 @@ levels.lv7 = {
         }
     ],
     size:{},
-    speed:500,
-//    free:true
+    speed:500
 };
 
 
@@ -363,7 +406,6 @@ levels.lv8 = {
         ['solid', 'block', 'block', 'solid', 'solid', 'block', 'block', 'solid', 'solid', 'block', 'block', 'solid', ],
         ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
     ],
-    scale:50,
     victims:[
         {
             type:'blue',
@@ -377,8 +419,7 @@ levels.lv8 = {
         }
     ],
     size:{},
-    speed:500,
-//    free:true
+    speed:500
 };
 
 levels.order = [
@@ -386,7 +427,8 @@ levels.order = [
     levels.tut1,
     levels.tut2,
     levels.tut3,
-    levels.lv2,
+    levels.tut4,
+    levels.lv3,
     levels.lv4,
     levels.lv5,
     levels.lv6,

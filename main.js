@@ -21,7 +21,8 @@ var game = {
         prefabs:{},
         mouse_pos:{x:null, y:null},
         mouse_down:false,
-        on:true,
+        quit:false,
+        loop:false,
         close:null
     },
     settings:{
@@ -116,14 +117,18 @@ var game = {
     start_loop:function (loop) {
         this.vars.lastUpdate = new Date().getTime();
         var _this = this;
+        game.vars.quit = false;
         (function update() {
-            if (game.vars.on) {
+            if (game.vars.quit) {
+                console.log('quit');
+                game.vars.loop = false;
+                if (game.vars.close) game.vars.close();
+            } else {
+                game.vars.loop = true;
                 loop_call(update);
                 var time = new Date().getTime(), last = _this.vars.lastUpdate;
                 loop(time - last);
                 _this.vars.lastUpdate = time;
-            } else {
-                if (game.vars.close) game.vars.close();
             }
         })();
     },
@@ -170,6 +175,12 @@ var game = {
     },
     remove:function (elem) {
         elem.parentNode.removeChild(elem);
+    },
+    clear:function () {
+        var stage = game.vars.stage;
+        while (stage.firstChild) {
+            stage.removeChild(stage.firstChild);
+        }
     }
 };
 
@@ -212,6 +223,16 @@ var utl = {
 
         // todo: give number to represent what is getting intersected
         if (xCross && yCross) return true;
+    },
+    clone:function (obj) {
+        var res = (obj instanceof Array) ? [] : {};
+        if (typeof obj == 'object') {
+            for (var key in obj) {
+                res[key] = utl.clone(obj[key]);
+            }
+            return res;
+        }
+        return obj;
     }
 };
 
@@ -236,26 +257,28 @@ function print_level() {
 }
 
 function create_prefabs() {
-    game.add_prefab('block', LEVEL.scale);
-    game.add_prefab('solid', LEVEL.scale);
-    game.add_prefab('blue', LEVEL.scale);
-    game.add_prefab('red', LEVEL.scale);
+    game.add_prefab('block', scale);
+    game.add_prefab('solid', scale);
+    game.add_prefab('blue', scale);
+    game.add_prefab('red', scale);
 }
 
 function set_block(pos, type) {
     var block = game.get_prefab(type);
     block.type = type;
-    block.position(pos.x * LEVEL.scale, pos.y * LEVEL.scale, 0).update();
+    block.position(pos.x * scale, pos.y * scale, 0).update();
     game.add(block);
     LEVEL.world[pos.x][pos.y] = block;
 }
 
+var scale = 50;
+var currentLevel = 0;
 var time_buffer = 0, blocks = 0, LEVEL;
 
 function ready_game() {
     LEVEL.size = {
-        x:game.settings.aspect.x / LEVEL.scale,
-        y:game.settings.aspect.y / LEVEL.scale
+        x:game.settings.aspect.x / scale,
+        y:game.settings.aspect.y / scale
     };
 
     if (!LEVEL.world) {
@@ -275,15 +298,63 @@ function ready_game() {
     for (var j = 0; j < LEVEL.victims.length; ++j) {
         var vi = LEVEL.victims[j];
         var victim = game.get_prefab(vi.type);
-        victim.position(vi.start.x * LEVEL.scale, vi.start.y * LEVEL.scale, 0).update();
+        victim.position(vi.start.x * scale, vi.start.y * scale, 0).update();
         vi.elem = victim;
         game.add(vi.elem);
         console.log(vi);
     }
 }
 
-function loadLevel() {
+function loadLevel(num, callback) {
+    currentLevel = num;
+    if (game.vars.loop) {
+        game.vars.close = function () {
+            loadLevel(num);
+        };
+        game.vars.quit = true;
+        return;
+    }
+    blocks = 0;
+    time_buffer = 0;
+    game.clear();
+    LEVEL = utl.clone(levels.order[num]);
+    console.log(LEVEL);
+    ready_game();
 
+    // title message
+    var center = document.getElementsByClassName('center')[0];
+    var msg = document.createElement('div');
+    msg.id = 'msg';
+    msg.innerHTML = LEVEL.name;
+    center.appendChild(msg);
+    setTimeout(function () {
+        msg.style.top = (-msg.offsetHeight / 2) + 'px';
+    }, 0);
+    function removeMsg () {
+        center.removeChild(msg);
+        window.onmousedown = null;
+        game.start_loop(loop);
+        console.log('started');
+        if (callback) callback();
+    }
+    window.onmousedown = removeMsg;
+    setTimeout(removeMsg, LEVEL.name.length * 100);
+}
+
+function fail() {
+    var l = currentLevel;
+    loadLevel(l);
+
+//    loadLevel(1, function () {
+//    });
+}
+
+function succeed() {
+    var l = currentLevel;
+    loadLevel(l + 1);
+//, function () {
+//        loadLevel(l + 1);
+//    });
 }
 
 function loop(time) {
@@ -295,12 +366,12 @@ function loop(time) {
 
         object.pos = object.elem.position();
         var pos = {
-            x:Math.floor(object.pos.x / LEVEL.scale),
-            y:Math.floor(object.pos.y / LEVEL.scale)
+            x:Math.floor(object.pos.x / scale),
+            y:Math.floor(object.pos.y / scale)
         };
 
         function again() {
-            object.elem.position(pos.x * LEVEL.scale, pos.y * LEVEL.scale, 0);
+            object.elem.position(pos.x * scale, pos.y * scale, 0);
             object.elem.update();
             update_position(object, collide, times + 1);
         }
@@ -317,11 +388,11 @@ function loop(time) {
                     }
                     pos.x -= 1;
                 } else if (pos.y > 0 && !world[pos.x - 1][pos.y - 1] && !world[pos.x][pos.y - 1]) {
-                    collide(world[pos.x - 1][pos.y].type);
+                    if (collide(world[pos.x - 1][pos.y].type)) return;
                     pos.x -= 1;
                     pos.y -= 1;
                 } else {
-                    collide(world[pos.x - 1][pos.y].type);
+                    if (collide(world[pos.x - 1][pos.y].type)) return;
                     object.left = false;
                     again();
                     return;
@@ -339,11 +410,11 @@ function loop(time) {
                     }
                     pos.x += 1;
                 } else if (pos.y > 0 && !world[pos.x + 1][pos.y - 1] && !world[pos.x][pos.y - 1]) {
-                    collide(world[pos.x + 1][pos.y].type);
+                    if (collide(world[pos.x + 1][pos.y].type)) return;
                     pos.x += 1;
                     pos.y -= 1;
                 } else {
-                    collide(world[pos.x + 1][pos.y].type);
+                    if (collide(world[pos.x + 1][pos.y].type)) return;
                     object.left = true;
                     again();
                     return;
@@ -355,7 +426,7 @@ function loop(time) {
             }
         }
 
-        object.elem.position(pos.x * LEVEL.scale, pos.y * LEVEL.scale, 0);
+        object.elem.position(pos.x * scale, pos.y * scale, 0);
         object.elem.update();
     }
 
@@ -367,19 +438,27 @@ function loop(time) {
             var victim = LEVEL.victims[i];
             if (!victim.elem) continue;
             var remove = false;
+            var safe = false;
             update_position(victim, function (type) {
                 if (type == 'solid' || type == 'block') {
                     return;
                 }
                 remove = true;
                 if (type != victim.type) {
-                    alert('One Down!');
+                    victim.dead = true;
                 } else {
-                    alert('You Fail');
+                    safe = true;
                 }
                 game.remove(victim.elem);
                 victim.elem = null;
+
+                return safe || victim.dead;
             });
+
+            if (safe) {
+                fail();
+                return;
+            }
             var res = victim.elem.position();
             var key = res.x + '-' + res.y;
             if (pos_check[key]) {
@@ -388,13 +467,27 @@ function loop(time) {
             }
             pos_check[res.x + '-' + res.y] = true;
         }
+
+        var win = true;
+
+        for (var i = 0; i < LEVEL.victims.length; ++i) {
+            if (!LEVEL.victims[i].dead) {
+                win = false;
+                break;
+            }
+        }
+
+        if (win) {
+            succeed();
+            return;
+        }
     }
 
     // mouse add
     if (game.vars.mouse_down) {
         var mouse_pos = {
-            x:Math.floor(game.vars.mouse_pos.x / LEVEL.scale),
-            y:Math.floor(game.vars.mouse_pos.y / LEVEL.scale)
+            x:Math.floor(game.vars.mouse_pos.x / scale),
+            y:Math.floor(game.vars.mouse_pos.y / scale)
         };
         if (LEVEL.free) { // level creator
             var type = 'block';
@@ -414,7 +507,7 @@ function loop(time) {
             if (type && !LEVEL.world[mouse_pos.x][mouse_pos.y]) {
                 var block = game.get_prefab(type);
                 block.type = type;
-                block.position(mouse_pos.x * LEVEL.scale, mouse_pos.y * LEVEL.scale, 0).update();
+                block.position(mouse_pos.x * scale, mouse_pos.y * scale, 0).update();
                 game.add(block);
                 LEVEL.world[mouse_pos.x][mouse_pos.y] = block;
             }
@@ -438,7 +531,7 @@ function loop(time) {
                     if (blocks > 0) {
                         b = game.get_prefab('block');
                         b.type = 'block';
-                        b.position(mouse_pos.x * LEVEL.scale, mouse_pos.y * LEVEL.scale, 0).update();
+                        b.position(mouse_pos.x * scale, mouse_pos.y * scale, 0).update();
                         game.add(b);
                         LEVEL.world[mouse_pos.x][mouse_pos.y] = b;
                         --blocks;
@@ -451,10 +544,8 @@ function loop(time) {
     }
 }
 
-
 (function () {
     game.init('#game');
     create_prefabs();
-    ready_game();
-    game.start_loop(loop);
+    loadLevel(0);
 })();
