@@ -3,11 +3,13 @@
 <head>
     <title></title>
     <script type="text/javascript" src="lib/Sprite3d.js"></script>
+    <script type="text/javascript" src="levels.js"></script>
     <style type="text/css">
         body {
             overflow: hidden;
             background: black;
         }
+
         .center {
             position: absolute;
             top: 50%;
@@ -15,24 +17,30 @@
             width: 1px;
             height: 1px;
         }
+
         #game {
             background: white;
             background-size: 255px;
         }
-        .player {
-            background: orange;
+
+        .block {
+            background: #f4f4f4;
+            box-shadow: inset 0 0 2px black;
         }
-        .roof_tile {
-            background: grey;
-            box-shadow: inset 0 0 5px black;
+
+        .solid {
+            background: #6f6f6f;
+            box-shadow: inset 0 0 2px black;
         }
-        .step {
-            background: #c5d2ff;
-            box-shadow: inset 0 0 5px black;
+
+        .blue {
+            background: #61b0f3;
+            box-shadow: inset 0 0 2px black;
         }
-        .bomb {
-            background: red;
-            box-shadow: inset 0 0 5px black;
+
+        .red {
+            background: #f3273c;
+            box-shadow: inset 0 0 2px black;
         }
     </style>
 </head>
