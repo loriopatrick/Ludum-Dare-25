@@ -613,5 +613,6 @@ function loop(time) {
         return;
     }
     currentLevel = utl.get_cookie('level') || 0;
+    currentLevel = parseInt(currentLevel);
     loadLevel(currentLevel);
 })();
