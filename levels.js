@@ -158,7 +158,7 @@ levels.tut4 = {
 };
 
 levels.lv3 = {
-    name:'Lets get killing',
+    name:'Lets get killing.',
     world:[
         ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
         ['solid', 0, 0, 0, 0, 0, 'solid', 'block', 'block', 'block', 'block', 'solid', ],
@@ -220,7 +220,7 @@ levels.lv4 = {
 };
 
 levels.lv5 = {
-    name:'It\'s Impossible',
+    name:'It\'s Impossible.',
     world:[
         ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
         ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
@@ -469,7 +469,7 @@ levels.lv11 = {
 };
 
 levels.lv12 = {
-    name:'Loopy.',
+    name:'Loopy',
     world:[
         ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
         ['solid', 0, 0, 0, 0, 0, 0, 0, 0, 0, 'red', 'solid', ],
@@ -505,7 +505,7 @@ levels.lv12 = {
 };
 
 levels.lv13 = {
-    name:'Destroy the moles.',
+    name:'Lobster anyone?',
     world:[
         ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
         ['solid', 'blue', 'blue', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
@@ -542,7 +542,7 @@ levels.lv13 = {
 
 
 levels.lv14 = {
-    name:'Limited.',
+    name:'Limited',
     world:[
         ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
         ['solid', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'solid', ],
