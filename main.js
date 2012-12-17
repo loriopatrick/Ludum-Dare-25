@@ -269,6 +269,8 @@ function create_prefabs() {
     load_audio('add', 'bounce.wav').volume = .5;
     load_audio('error', 'error.wav').volume = .05;
     load_audio('pickup', 'pickup.wav').volume = .01;
+    load_audio('safe', 'safe.wav').volume = .5;
+    load_audio('dead', 'dead.wav').volume = .5;
 }
 
 function set_block(pos, type) {
@@ -353,6 +355,7 @@ function loadLevel(num, callback) {
 
 function fail() {
     if (BUILDING) return;
+    audio_clips['safe'].play();
     loadLevel(currentLevel);
 }
 
@@ -453,6 +456,7 @@ function loop(time) {
                 remove = true;
                 if (type != victim.type) {
                     victim.dead = true;
+                    audio_clips['dead'].play();
                 } else {
                     safe = true;
                 }
@@ -579,5 +583,5 @@ function loop(time) {
         loadLevel(levels.order.length - 1);
         return;
     }
-    loadLevel(levels.order.length - 1);
+    loadLevel(0);
 })();

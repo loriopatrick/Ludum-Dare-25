@@ -432,6 +432,114 @@ levels.lv10 = {
     speed:500
 };
 
+levels.lv11 = {
+    name:'Destroy the moles.',
+    world:[
+        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
+        ['solid', 0, 0, 'block', 'block', 'block', 'block', 'block', 0, 0, 0, 'solid', ],
+        ['solid', 0, 0, 'block', 'block', 'block', 'block', 'block', 0, 0, 0, 'solid', ],
+        ['solid', 0, 0, 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 'red', 'solid', ],
+        ['solid', 0, 0, 'solid', 0, 0, 0, 0, 0, 0, 'red', 'solid', ],
+        ['solid', 0, 0, 'solid', 0, 'solid', 0, 'solid', 0, 0, 'red', 'solid', ],
+        ['solid', 0, 0, 'solid', 0, 'solid', 0, 'solid', 0, 0, 'red', 'solid', ],
+        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 'red', 'solid', ],
+        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 'blue', 'solid', ],
+        ['solid', 0, 0, 'solid', 0, 'solid', 'solid', 0, 0, 0, 'blue', 'solid', ],
+        ['solid', 0, 0, 'solid', 0, 'solid', 0, 'solid', 0, 0, 'blue', 'solid', ],
+        ['solid', 0, 0, 'solid', 0, 0, 'solid', 'solid', 0, 0, 'blue', 'solid', ],
+        ['solid', 0, 0, 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 'blue', 'solid', ],
+        ['solid', 0, 0, 'block', 'block', 'block', 'block', 'block', 0, 0, 0, 'solid', ],
+        ['solid', 0, 0, 'block', 'block', 'block', 'block', 'block', 0, 0, 0, 'solid', ],
+        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
+    ],
+    victims:[
+        {
+            type:'blue',
+            start:{x:9, y:2},
+            left:false
+        },
+        {
+            type:'red',
+            start:{x:6, y:2},
+            left:true
+        }
+    ],
+    size:{},
+    speed:500
+};
+
+levels.lv12 = {
+    name:'Loopy.',
+    world:[
+        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
+        ['solid', 0, 0, 0, 0, 0, 0, 0, 0, 0, 'red', 'solid', ],
+        ['solid', 0, 0, 0, 0, 0, 0, 0, 0, 0, 'block', 'solid', ],
+        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 0, 'solid', ],
+        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 0, 'solid', ],
+        ['solid', 0, 0, 0, 0, 0, 0, 0, 'block', 'block', 'block', 'solid', ],
+        ['solid', 0, 0, 0, 0, 0, 0, 0, 'block', 'block', 'block', 'solid', ],
+        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 0, 'solid', 'solid', 'solid', 'solid', ],
+        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 0, 'solid', 'solid', 'solid', 'solid', ],
+        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 0, 'solid', 'solid', 'solid', 'solid', ],
+        ['solid', 0, 0, 0, 0, 0, 0, 0, 'solid', 'solid', 'solid', 'solid', ],
+        ['solid', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 0, 0, 0, 0, ],
+        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 0, 0, 'solid', 'block', ],
+        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 0, 'blue', ],
+        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
+    ],
+    victims:[
+        {
+            type:'blue',
+            start:{x:12, y:11},
+            left:false
+        },
+        {
+            type:'red',
+            start:{x:2, y:9},
+            left:false
+        }
+    ],
+    size:{},
+    speed:500
+};
+
+levels.lv13 = {
+    name:'Destroy the moles.',
+    world:[
+        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
+        ['solid', 'blue', 'blue', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
+        ['solid', 'solid', 'blue', 'blue', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
+        ['solid', 'solid', 'solid', 'blue', 'blue', 'blue', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
+        ['solid', 'solid', 'solid', 'solid', 'blue', 0, 0, 0, 'solid', 'solid', 'solid', 'solid', ],
+        ['solid', 'solid', 'solid', 'solid', 'solid', 0, 0, 0, 'solid', 'solid', 0, 'solid', ],
+        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 0, 'solid', 0, 0, 'solid', ],
+        ['solid', 'solid', 'solid', 'solid', 'block', 'block', 'solid', 0, 0, 0, 'solid', 'solid', ],
+        ['solid', 'solid', 'solid', 'solid', 'block', 'block', 'solid', 0, 0, 0, 'solid', 'solid', ],
+        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 0, 0, 'solid', 0, 0, 'solid', ],
+        ['solid', 'solid', 'solid', 'solid', 'solid', 0, 0, 0, 'solid', 'solid', 0, 'solid', ],
+        ['solid', 'solid', 'solid', 'solid', 'red', 0, 0, 0, 'solid', 'solid', 'solid', 'solid', ],
+        ['solid', 'solid', 'solid', 'red', 'red', 'red', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
+        ['solid', 'solid', 'red', 'red', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
+        ['solid', 'red', 'red', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
+        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
+    ],
+    victims:[
+        {
+            type:'blue',
+            start:{x:9, y:10},
+            left:false
+        },
+        {
+            type:'red',
+            start:{x:5, y:10},
+            left:false
+        }
+    ],
+    size:{},
+    speed:500
+};
+
 levels.order = [
     levels.splash,
     levels.tut1,
@@ -445,5 +553,8 @@ levels.order = [
     levels.lv7,
     levels.lv8,
     levels.lv9,
-    levels.lv10
+    levels.lv10,
+    levels.lv11,
+    levels.lv12,
+    levels.lv13
 ];
