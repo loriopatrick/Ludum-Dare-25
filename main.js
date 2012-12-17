@@ -1,5 +1,3 @@
-"use strict";
-
 var BUILDING = false; // true;
 
 window.loop_call = (function () {
@@ -493,12 +491,16 @@ function loop(time) {
                 fail();
                 return;
             }
+
+            if (!victim.elem) continue;
             var res = victim.elem.position();
             var key = res.x + '-' + res.y;
+
             if (pos_check[key]) {
                 fail();
                 return;
             }
+
             pos_check[res.x + '-' + res.y] = true;
         }
 
@@ -529,74 +531,78 @@ function loop(time) {
         }
     }
 
-    // mouse add
-    if (game.vars.mouse_down) {
-        var mouse_pos = {
-            x:Math.floor(game.vars.mouse_pos.x / scale),
-            y:Math.floor(game.vars.mouse_pos.y / scale)
-        };
-        if (LEVEL.free) { // level creator
-            var type = 'block';
-            if (game.btn_down('up')) {
-                if (LEVEL.world[mouse_pos.x][mouse_pos.y]) {
-                    game.remove(LEVEL.world[mouse_pos.x][mouse_pos.y]);
-                    LEVEL.world[mouse_pos.x][mouse_pos.y] = null;
-                }
-                type = null;
-            } else if (game.btn_down('left')) {
-                type = 'red';
-            } else if (game.btn_down('right')) {
-                type = 'blue';
-            } else if (game.btn_down('down')) {
-                type = 'solid';
-            }
-            if (type && !LEVEL.world[mouse_pos.x][mouse_pos.y]) {
-                var block = game.get_prefab(type);
-                block.type = type;
-                block.position(mouse_pos.x * scale, mouse_pos.y * scale, 0).update();
-                game.add(block);
-                LEVEL.world[mouse_pos.x][mouse_pos.y] = block;
-            }
-        } else { // level player
-            var b;
-            if (game.btn_down('special')) {
-                b = LEVEL.world[mouse_pos.x][mouse_pos.y];
-                if (b && b.type == 'block') {
-                    if (mouse_pos.y == 0 || !LEVEL.world[mouse_pos.x][mouse_pos.y - 1] ||
-                        LEVEL.world[mouse_pos.x][mouse_pos.y - 1].type != 'block') {
+    (function () {
+        // mouse add
+        if (game.vars.mouse_down) {
+            var mouse_pos = {
+                x:Math.floor(game.vars.mouse_pos.x / scale),
+                y:Math.floor(game.vars.mouse_pos.y / scale)
+            };
+            if (mouse_pos.x < 0 || mouse_pos.y < 0) return;
+            if (mouse_pos.x >= LEVEL.size.x || mouse_pos.y >= LEVEL.size.y) return;
+            if (LEVEL.free) { // level creator
+                var type = 'block';
+                if (game.btn_down('up')) {
+                    if (LEVEL.world[mouse_pos.x][mouse_pos.y]) {
                         game.remove(LEVEL.world[mouse_pos.x][mouse_pos.y]);
                         LEVEL.world[mouse_pos.x][mouse_pos.y] = null;
-                        ++blocks;
-                        audio_clips['pickup'].play();
-                    } else {
-                        error();
                     }
-                } else {
-                    error();
+                    type = null;
+                } else if (game.btn_down('left')) {
+                    type = 'red';
+                } else if (game.btn_down('right')) {
+                    type = 'blue';
+                } else if (game.btn_down('down')) {
+                    type = 'solid';
                 }
-            } else {
-                if (!LEVEL.world[mouse_pos.x][mouse_pos.y] &&
-                    (mouse_pos.y + 1 >= LEVEL.size.y || LEVEL.world[mouse_pos.x][mouse_pos.y + 1])) {
-                    if (blocks > 0) {
-                        b = game.get_prefab('block');
-                        b.type = 'block';
-                        b.position(mouse_pos.x * scale, mouse_pos.y * scale, 0).update();
-                        game.add(b);
-                        LEVEL.world[mouse_pos.x][mouse_pos.y] = b;
-                        --blocks;
-                        audio_clips['add'].play();
+                if (type && !LEVEL.world[mouse_pos.x][mouse_pos.y]) {
+                    var block = game.get_prefab(type);
+                    block.type = type;
+                    block.position(mouse_pos.x * scale, mouse_pos.y * scale, 0).update();
+                    game.add(block);
+                    LEVEL.world[mouse_pos.x][mouse_pos.y] = block;
+                }
+            } else { // level player
+                var b;
+                if (game.btn_down('special')) {
+                    b = LEVEL.world[mouse_pos.x][mouse_pos.y];
+                    if (b && b.type == 'block') {
+                        if (mouse_pos.y == 0 || !LEVEL.world[mouse_pos.x][mouse_pos.y - 1] ||
+                            LEVEL.world[mouse_pos.x][mouse_pos.y - 1].type != 'block') {
+                            game.remove(LEVEL.world[mouse_pos.x][mouse_pos.y]);
+                            LEVEL.world[mouse_pos.x][mouse_pos.y] = null;
+                            ++blocks;
+                            audio_clips['pickup'].play();
+                        } else {
+                            error();
+                        }
                     } else {
                         error();
                     }
                 } else {
-                    error();
+                    if (!LEVEL.world[mouse_pos.x][mouse_pos.y] &&
+                        (mouse_pos.y + 1 >= LEVEL.size.y || LEVEL.world[mouse_pos.x][mouse_pos.y + 1])) {
+                        if (blocks > 0) {
+                            b = game.get_prefab('block');
+                            b.type = 'block';
+                            b.position(mouse_pos.x * scale, mouse_pos.y * scale, 0).update();
+                            game.add(b);
+                            LEVEL.world[mouse_pos.x][mouse_pos.y] = b;
+                            --blocks;
+                            audio_clips['add'].play();
+                        } else {
+                            error();
+                        }
+                    } else {
+                        error();
+                    }
                 }
             }
+            last_down = true;
+        } else {
+            last_down = false;
         }
-        last_down = true;
-    } else {
-        last_down = false;
-    }
+    })();
 }
 
 (function () {
