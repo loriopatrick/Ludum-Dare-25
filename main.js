@@ -360,16 +360,20 @@ function loadLevel(num, callback) {
     setTimeout(function () {
         msg.style.top = (-msg.offsetHeight / 2) + 'px';
     }, 0);
+
+    var t;
+
     function removeMsg() {
         center.removeChild(msg);
         window.onmousedown = null;
         game.start_loop(loop);
         console.log('started');
         if (callback) callback();
+        clearTimeout(t);
     }
 
     window.onmousedown = removeMsg;
-    setTimeout(removeMsg, LEVEL.name.length * 100);
+    t = setTimeout(removeMsg, LEVEL.name.length * 100);
 }
 
 function fail() {
