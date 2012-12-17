@@ -540,6 +540,43 @@ levels.lv13 = {
     speed:500
 };
 
+
+levels.lv14 = {
+    name:'Limited.',
+    world:[
+        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
+        ['solid', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'solid', ],
+        ['solid', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'solid', ],
+        ['solid', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'solid', ],
+        ['solid', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'solid', ],
+        ['solid', 'block', 'block', 'block', 'solid', 'red', 'solid', 0, 0, 0, 0, 'solid', ],
+        ['solid', 'block', 'block', 'block', 'solid', 'solid', 'solid', 0, 0, 0, 0, 'solid', ],
+        ['solid', 'block', 'block', 'block', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
+        ['solid', 'block', 'block', 'block', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
+        ['solid', 'block', 'block', 'block', 'solid', 'solid', 'solid', 0, 0, 0, 0, 'solid', ],
+        ['solid', 'block', 'block', 'block', 'solid', 'blue', 'solid', 0, 0, 0, 0, 'solid', ],
+        ['solid', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'solid', ],
+        ['solid', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'solid', ],
+        ['solid', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'solid', ],
+        ['solid', 0, 0, 0, 0, 0, 0, 0, 0, 0, 'block', 'solid', ],
+        ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
+    ],
+    victims:[
+        {
+            type:'blue',
+            start:{x:9, y:10},
+            left:false
+        },
+        {
+            type:'red',
+            start:{x:6, y:10},
+            left:false
+        }
+    ],
+    size:{},
+    speed:500
+};
+
 levels.order = [
     levels.splash,
     levels.tut1,
@@ -556,5 +593,6 @@ levels.order = [
     levels.lv10,
     levels.lv11,
     levels.lv12,
-    levels.lv13
+    levels.lv13,
+    levels.lv14
 ];
