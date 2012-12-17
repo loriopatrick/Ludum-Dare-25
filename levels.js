@@ -220,7 +220,7 @@ levels.lv4 = {
 };
 
 levels.lv5 = {
-    name:'It\'s Impossible.',
+    name:'It\'s NOT Impossible. THINK!',
     world:[
         ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
         ['solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', 'solid', ],
